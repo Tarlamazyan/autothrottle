@@ -39,6 +39,10 @@ export class RateLimiter extends EventEmitter {
     this.interval = DEFAULT_INTERVAL;
   }
 
+  public getProcessingRequestsCount(userId: UserId): number {
+    return this.processingRequestsCount.get(userId) || 0;
+  }
+
   async processRequest(userId: UserId, handler: IRequestHandler): Promise<boolean> {
     const request = new Request(handler);
     const processingRequests = this.processingRequestsCount.get(userId) || 0;
