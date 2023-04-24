@@ -1,15 +1,124 @@
-# Auto throttle
+# Auto throttle Middleware
 
-This project is a simple rate limiter server implemented in TypeScript. It allows you to limit the number of requests per user over a specified time interval.
+This middleware is designed to limit the rate of incoming requests to your Node.js server. It can be used with any Node.js framework that supports middleware functions. The middleware is built using a simple yet effective rate limiting algorithm, and is easily configurable.
 
-## Features
+## Installation
 
-- Rate limiting by IP address
-- Configurable maximum requests and time interval
-- Endpoint to update rate limiting configuration at runtime
-- Simple JSON response format
+To use the middleware, simply import the createRateLimiterMiddleware function from the provided source code
 
-## Prerequisites
+```typescript
+import { createRateLimiterMiddleware } from './path/to/middleware';
+```
+
+## Usage
+
+To use the middleware, you need to create an instance of it by calling the ```createRateLimiterMiddleware``` function with the desired maximum number of requests and the interval in seconds between request processing resets.
+
+```typescript
+const rateLimiterMiddleware = createRateLimiterMiddleware(maxRequests, interval);
+```
+
+Then, add the created middleware to your application's middleware stack.
+
+### Express.js
+
+```typescript
+const express = require('express');
+const app = express();
+
+// Import the middleware
+const { createRateLimiterMiddleware } = require('./path/to/middleware');
+
+// Configure the middleware
+const maxRequests = 5;
+const interval = 60; // in seconds
+
+// Create the middleware instance
+const rateLimiterMiddleware = createRateLimiterMiddleware(maxRequests, interval);
+
+// Add the middleware to the application
+app.use(rateLimiterMiddleware);
+
+// Your other route handlers and middleware
+// ...
+
+// Start the server
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+```
+
+### Koa.js
+```typescript
+const Koa = require('koa');
+const app = new Koa();
+
+// Import the middleware
+const { createRateLimiterMiddleware } = require('./path/to/middleware');
+
+// Configure the middleware
+const maxRequests = 5;
+const interval = 60; // in seconds
+
+// Create the middleware instance
+const rateLimiterMiddleware = createRateLimiterMiddleware(maxRequests, interval);
+
+// Add the middleware to the application
+app.use(async (ctx, next) => {
+  await rateLimiterMiddleware(ctx.req, ctx.res, next);
+});
+
+// Your other route handlers and middleware
+// ...
+
+// Start the server
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+```
+
+### Hapi.js
+```typescript
+const Hapi = require('@hapi/hapi');
+
+// Import the middleware
+const { createRateLimiterMiddleware } = require('./path/to/middleware');
+
+// Configure the middleware
+const maxRequests = 5;
+const interval = 60; // in seconds
+
+// Create the middleware instance
+const rateLimiterMiddleware = createRateLimiterMiddleware(maxRequests, interval);
+
+const server = Hapi.server({
+  port: 3000,
+  host: 'localhost'
+});
+
+server.ext('onPreHandler', async (request, h) => {
+  await rateLimiterMiddleware(request.raw.req, request.raw.res, () => {});
+  return h.continue;
+});
+
+// Your other route handlers and middleware
+// ...
+
+(async () => {
+  await server.start();
+  console.log('Server running on %s', server.info.uri);
+})();
+```
+
+The middleware can also be used with other Node.js frameworks that support middleware functions. Simply adapt the integration to fit the specific framework's middleware structure.
+
+## Configuration
+
+The rate limiter middleware can be configured using the ```setMaxRequests``` and ```setInterval``` methods. 
+The ```getLimits``` method allows you to retrieve the current configuration. The ```resetLimits``` method resets the configuration to the default values.
+
 
 - [Node.js](https://nodejs.org/) (version 14 or higher)
 - [TypeScript](https://www.typescriptlang.org/)

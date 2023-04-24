@@ -1,5 +1,5 @@
 import { InvalidJsonError } from './InvalidJsonError';
-import { INVALID_JSON } from '../constatns';
+import { INVALID_JSON } from '../constants';
 
 describe('InvalidJsonError', () => {
   it('should create an InvalidJsonError with the correct statusCode and message', () => {

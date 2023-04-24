@@ -2,9 +2,9 @@ import { EventEmitter } from 'events';
 import { UserId } from '../types';
 import { IRequestHandler } from '../handlers/IRequestHandler';
 import { Request } from './Request';
+import config from '../config.json';
 
-const DEFAULT_MAX_REQUESTS = 2;
-const DEFAULT_INTERVAL = 10;
+const { DEFAULT_MAX_REQUESTS, DEFAULT_INTERVAL } = config;
 
 export class RateLimiter extends EventEmitter {
   private requestQueue: Map<UserId, Request[]>;
@@ -37,10 +37,6 @@ export class RateLimiter extends EventEmitter {
   resetLimits(): void {
     this.maxRequests = DEFAULT_MAX_REQUESTS;
     this.interval = DEFAULT_INTERVAL;
-  }
-
-  public getProcessingRequestsCount(userId: UserId): number {
-    return this.processingRequestsCount.get(userId) || 0;
   }
 
   async processRequest(userId: UserId, handler: IRequestHandler): Promise<boolean> {
