@@ -1,8 +1,17 @@
+import { IncomingMessage } from 'http';
 import { RateLimiter } from './RateLimiter';
 import { IRequestHandler } from '../handlers/IRequestHandler';
 
 class TestRequestHandler implements IRequestHandler {
-  handleRequest() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  handleRequest() { }
+  handleGetLimits(): Promise<void> {
+    return Promise.resolve();
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handlePutLimits(req: IncomingMessage): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 describe('RateLimiter', () => {
@@ -33,13 +42,19 @@ describe('RateLimiter', () => {
     jest.useRealTimers();
 
     const rateLimiter = new RateLimiter(1, 1);
-    const mockHandler1 = jest.fn().mockResolvedValue(undefined);
-    const mockHandler2 = jest.fn().mockResolvedValue(undefined);
+    const mockHandler1 = jest.fn();
+    const mockHandler2 = jest.fn();
 
-    rateLimiter.processRequest('user1', { handleRequest: mockHandler1 });
+    const requestHandler1 = new TestRequestHandler();
+    requestHandler1.handleRequest = mockHandler1;
+
+    const requestHandler2 = new TestRequestHandler();
+    requestHandler2.handleRequest = mockHandler2;
+
+    rateLimiter.processRequest('user1', requestHandler1);
 
     setTimeout(() => {
-      rateLimiter.processRequest('user1', { handleRequest: mockHandler2 });
+      rateLimiter.processRequest('user1', requestHandler2);
     }, 500);
 
     expect(mockHandler1).toHaveBeenCalledTimes(1);

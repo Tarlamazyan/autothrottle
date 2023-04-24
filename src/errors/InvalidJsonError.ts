@@ -1,5 +1,5 @@
 import { ApiError } from './ApiError';
-import { INVALID_JSON } from '../constatns';
+import { INVALID_JSON } from '../constants';
 
 export class InvalidJsonError extends ApiError {
   constructor() {

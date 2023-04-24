@@ -1,5 +1,5 @@
 import { MethodNotAllowedError } from './MethodNotAllowedError';
-import { METHOD_NOT_ALLOWED } from '../constatns';
+import { METHOD_NOT_ALLOWED } from '../constants';
 
 describe('MethodNotAllowedError', () => {
   it('should create a MethodNotAllowedError with the correct statusCode and message', () => {

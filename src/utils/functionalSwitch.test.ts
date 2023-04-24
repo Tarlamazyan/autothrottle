@@ -3,7 +3,7 @@ import { functionalSwitch } from './functionalSwitch';
 describe('functionalSwitch', () => {
   const actions = {
     action1: jest.fn(() => Promise.resolve('result1')),
-    action2: jest.fn(() => Promise.resolve('result2')),
+    action2: jest.fn(() => Promise.resolve('result2'))
   };
 
   const defaultAction = jest.fn(() => Promise.resolve('defaultResult'));
